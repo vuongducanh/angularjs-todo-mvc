@@ -19,3 +19,12 @@
 .dialog-todo .message-delete {
   text-align: center;
 }
+
+.to-do .action-search {
+  margin: 0;
+  vertical-align: text-top;
+}
+
+.to-do {
+  padding-top: 50px;
+}

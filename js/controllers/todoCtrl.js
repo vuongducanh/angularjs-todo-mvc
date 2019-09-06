@@ -5,7 +5,8 @@ angular.module('toDoMvc')
       contentMessage: "content is required",
       typeMessage: "type is required"
     }
-    $scope.listToDo = []
+    $scope.listToDo = [],
+    $scope.originData = [],
     $scope.dataForm = {
       title: '',
       content: '',
@@ -14,18 +15,27 @@ angular.module('toDoMvc')
     $scope.dialogShow = false
     $scope.loading = true
     $scope.disableBtnAction = false
-    $scope.typeDialog = ''
+    $scope.typeDialog = '',
+    $scope.pageLimit = 5
 
     data.getListToDo().then(res => {
-      $scope.listToDo = res.data.sort(function (a, b) {
+      let dataTodo = res.data.sort(function (a, b) {
         return (b.id - a.id)
       })
+
+      $scope.listToDo = dataTodo
+      $scope.originData = dataTodo
       $scope.loading = false
     })
       .catch(err => {
         console.log(err)
         $scope.loading = false
       })
+
+    $scope.paginateList = function() {
+      let numberPaginate = Math.ceil($scope.listToDo.length / $scope.pageLimit)
+      return new Array(numberPaginate);
+    }
 
     $scope.handleDelete = function () {
       $scope.disableBtnAction = true
@@ -90,5 +100,23 @@ angular.module('toDoMvc')
           console.log(err)
           $scope.disableBtnAction = false
         })
+    }
+
+    $scope.handleSearch = function() {
+      var resultFilter = $scope.listToDo.filter(el => {
+        if (el.title && el.title.includes($scope.keySearch)) {
+          return el
+        }
+
+        if (el.content && el.content && el.content.includes($scope.keySearch)) {
+          return el
+        }
+      })
+
+      $scope.listToDo = resultFilter
+
+      if (!$scope.keySearch) {
+        $scope.listToDo = $scope.originData
+      }
     }
   })
