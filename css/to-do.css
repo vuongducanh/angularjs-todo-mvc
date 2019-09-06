@@ -1,0 +1,21 @@
+.dialog-todo .btn-action {
+  text-align: right;
+}
+
+.dialog-todo .title-dialog {
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.dialog-todo .layout-padding {
+  width: 30%;
+}
+
+.dialog-todo .icon-close {
+  position: absolute;
+  right: 0;
+}
+
+.dialog-todo .message-delete {
+  text-align: center;
+}

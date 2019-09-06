@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="./node_modules/angular-material/angular-material.min.css">
+  <link rel="stylesheet" href="./css/to-do.css">
+</head>
+
+<body ng-app="toDoMvc">
+
+  <ng-view></ng-view>
+
+  <script type="text/ng-template" id="toDoMvc-index.html">
+    <div class="container to-do">
+      <md-button class="md-raised md-primary" ng-click="showDialog(null, 'create')" ng-disabled="loading">Create
+      </md-button>
+
+      <div class="d-flex justify-content-center" ng-if="loading">
+        <div class="spinner-border" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+
+      <table class="table" ng-if="!loading">
+        <thead>
+          <tr>
+            <th scope="col">Title</th>
+            <th scope="col">Content</th>
+            <th scope="col">Status</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="(key, value) in listToDo">
+            <td>{{ value.title }}</td>
+            <td>{{ value.content }}</td>
+            <td>{{ value.status}}</td>
+            <td>
+              <md-button class="md-raised md-primary color-detail" ng-click="showDialog(value, 'detail')">Detail</md-button>
+              <md-button class="md-raised" ng-click="showDialog(value, 'update')">Update</md-button>
+              <md-button class="md-raised md-warn" ng-click="showDialog(value, 'delete')">Delete</md-button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="visibility: hidden">
+        <div class="md-dialog-container dialog-todo" id="dialogContent">
+          <md-dialog layout-padding>
+            <h2 class="title-dialog">{{ typeDialog }}</h2>
+
+            <md-button class="md-icon-button icon-close" ng-click="hideDialog()">
+              <md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+            </md-button>
+
+            <form ng-if="dialogShow && typeDialog !== 'delete'" ng-submit="typeDialog === 'create' ? createToDo() : updateToDo()" name="todoForm">
+              <md-input-container>
+                <label>Title</label>
+                <input required name="title" ng-model="dataForm.title" ng-disabled="typeDialog === 'detail'">
+                <div ng-messages="todoForm.title.$error">
+                  <div ng-message="required">{{ todoMessage.titleMessage }}</div>
+                </div>
+              </md-input-container>
+
+              <md-input-container>
+                <label>Content</label>
+                <input required name="content" ng-model="dataForm.content" ng-disabled="typeDialog === 'detail'">
+                <div ng-messages="todoForm.content.$error">
+                  <div ng-message="required">{{ todoMessage.contentMessage }}</div>
+                </div>
+              </md-input-container>
+
+              <md-input-container>
+                <label>Action</label>
+                <md-select name="type" ng-model="dataForm.status" required ng-disabled="typeDialog === 'detail'">
+                  <md-option value="active">active</md-option>
+                  <md-option value="hide">hide</md-option>
+                </md-select>
+                <div ng-messages="todoForm.type.$error">
+                  <div ng-message="required">{{ todoMessage.typeMessage }}</div>
+                </div>
+              </md-input-container>
+              <div class="btn-action">
+                <md-button class="md-raised md-primary" ng-click="hideDialog()">Cancel</md-button>
+                <md-button class="md-raised md-primary" ng-disabled="disableBtnAction" type="submit" ng-if="typeDialog === 'create'">Create</md-button>
+                <md-button class="md-raised md-primary" ng-disabled="disableBtnAction" type="submit" ng-if="typeDialog === 'update'">Update</md-button>
+              </div>
+            </form>
+
+            <div ng-if="typeDialog === 'delete'"  class="message-delete"> Do you want delete ?
+              <div class="btn-action">
+                <md-button class="md-raised md-primary" ng-disabled="disableBtnAction" ng-click="handleDelete()">Confirm</md-button>
+              </div>
+            </div>
+          </md-dialog>
+        </div>
+      </div>
+    </div>
+  </script>
+
+  <script src="./node_modules/angular/angular.js"></script>
+  <script src="./node_modules/angular-route/angular-route.js"></script>
+  <script src="./node_modules//angular-resource/angular-resource.js"></script>
+  <script src="./node_modules/angular-animate/angular-animate.min.js"></script>
+  <script src="./node_modules/angular-aria/angular-aria.min.js"></script>
+  <script src="./node_modules/angular-messages/angular-messages.min.js"></script>
+  <script src="./node_modules/angular-material/angular-material.min.js"></script>
+  <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-114/svg-assets-cache.js"></script>
+  <script src="./js/app.js"></script>
+  <script src="./js/controllers/todoCtrl.js"></script>
+  <script src="./js/services/todoCallApi.js"></script>
+</body>
+</html>
